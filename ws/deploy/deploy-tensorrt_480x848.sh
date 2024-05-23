@@ -68,7 +68,7 @@ if [ "$MODEL_PATH" == "" ]; then
   exit 1
 fi
 
-
+cd $mmseg_repo  # we need the 'data' directory under $mmseg_repo 
 python3 $mmdeploy_dir/tools/deploy.py \
     $mmdeploy_config_path \
     $config_file \
