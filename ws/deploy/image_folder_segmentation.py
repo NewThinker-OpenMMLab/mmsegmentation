@@ -2,6 +2,7 @@
 import argparse
 import os
 import cv2
+import time
 import numpy as np
 from mmdeploy_runtime import Segmentor
 
@@ -58,19 +59,23 @@ def main():
             os.makedirs(args.output_folder)
 
     for idx, image_file in enumerate(image_files):
-        print('Processing image {} \t ({}) ...'.format(idx, image_file))
         img_path = os.path.join(args.image_folder, image_file)
         origin_img = cv2.imread(img_path)
 
         if downsample_img:
-            img = cv2.resize(origin_img, (424, 240))
+            # img = cv2.resize(origin_img, (424, 240))
+            img = cv2.resize(origin_img, (282, 160))
             # img = cv2.resize(origin_img, (212, 120))
         else:
             img = origin_img
 
+        inference_start_time = time.time()
         seg = segmentor(img)
         if seg.dtype == np.float32:
             seg = np.argmax(seg, axis=0)
+        inference_end_time = time.time()
+        inference_elapsed_time = inference_end_time - inference_start_time
+        print('Processed image {} \t ({}) ... (elapsed {} seconds)'.format(idx, image_file, inference_elapsed_time))
 
         # continue
 
